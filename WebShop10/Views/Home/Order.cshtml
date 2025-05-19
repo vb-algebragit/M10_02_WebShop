@@ -1,0 +1,129 @@
+﻿@using System.Security.Claims
+@model List<WebShop10.Extensions.CartItem>
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Order Page";
+    var userId = HttpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+}
+
+<div class="text-center mb-3">
+    <h1 class="display-4">Place your order</h1>
+</div>
+<hr />
+<div class="container">
+    <div class="row mt-3">
+        <div class="col">
+            <div class="text-center">
+                <h5>Cart items</h5>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a class="btn btn-sm btn-danger" asp-action="RemoveFromCart" asp-route-productId="@item.Product.Id">Remove</a>
+                            </td>
+                            <td>@item.Product.Title</td>
+                            <td>@item.Product.Price.ToString("0.00") EUR</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.GetTotal().ToString("0.00") EUR</td>
+
+                        </tr>
+                    }
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td> <b>Total price: @ViewBag.TotalPrice.ToString("0.00") EUR</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <div class="text-center">
+                <h5>Personal information</h5>
+            </div>
+            @if (@ViewBag.Errors.Count > 0)
+            {
+                <div class="alert alert-danger text-center" role="alert">
+                    @foreach (var error in ViewBag.Errors)
+                    {
+                        <p>@error</p>
+                    }
+                </div>
+            }
+            <form method="POST" asp-controller="Home" asp-action="CreateOrder">
+                <input type="hidden" name="UserId" value="@userId" />
+                <input type="hidden" name="Total" value="@ViewBag.TotalPrice.ToString("0.00")" />
+
+                <!-- Shipping -->
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="ShippingFirstName">First name *</label>
+                        <input type="text" class="form-control" id="ShippingFirstName" name="ShippingFirstName">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ShippingLastName">Last name *</label>
+                        <input type="text" class="form-control" id="ShippingLastName" name="ShippingLastName">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="ShippingEmail">Email address *</label>
+                        <input type="email" class="form-control" id="ShippingEmail" name="ShippingEmail">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="ShippingPhone">Phone *</label>
+                        <input type="text" class="form-control" id="ShippingPhone" name="ShippingPhone">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ShippingAddress">Address *</label>
+                    <input type="text" class="form-control" id="ShippingAddress" name="ShippingAddress">
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="ShippingCity">City *</label>
+                        <input type="text" class="form-control" id="ShippingCity" name="ShippingCity">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="ShippingCountry">Country *</label>
+                        <select id="ShippingCountry" class="form-control" name="ShippingCountry">
+                            <option value="Croatia">Croatia</option>
+                            <option value="Slovenia">Slovenia</option>
+                            <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+                            <option value="Hungary">Hungary</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="ShippingZipCode">Postal code *</label>
+                        <input type="text" class="form-control" id="ShippingZipCode" name="ShippingZipCode">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Message">Message</label>
+                    <textarea class="form-control" name="Message" id="Message" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-lg btn-success float-right" value="Place order" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
