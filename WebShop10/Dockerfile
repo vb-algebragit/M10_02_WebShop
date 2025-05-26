@@ -7,6 +7,8 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+# Heroku expects the app to listen on the port defined in the $PORT environment variable
+ENV ASPNETCORE_URLS=http://*:$PORT
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim AS build
