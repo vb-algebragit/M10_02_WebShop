@@ -13,15 +13,15 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["WebShop10/WebShop10.csproj", "WebShop10/"]
-RUN dotnet restore "./WebShop10/WebShop10.csproj"
+RUN dotnet restore "WebShop10/WebShop10.csproj"
 COPY . .
 WORKDIR "/src/WebShop10"
-RUN dotnet build "./WebShop10.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "WebShop10.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./WebShop10.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "WebShop10.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
