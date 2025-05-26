@@ -44,7 +44,7 @@ namespace WebShop10
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            // promjena kulture...
+            // culture changing...
             var defaultDateCulture = "hr-HR";
             var ci = new CultureInfo(defaultDateCulture);
             ci.NumberFormat.NumberDecimalSeparator = ".";
