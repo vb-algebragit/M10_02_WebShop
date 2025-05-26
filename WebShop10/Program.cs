@@ -26,6 +26,12 @@ namespace WebShop10
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            var port = Environment.GetEnvironmentVariable("PORT");
+            if (!string.IsNullOrEmpty(port))
+            {
+                builder.WebHost.UseUrls($"http://*:{port}");
+            }
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
